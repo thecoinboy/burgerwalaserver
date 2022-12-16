@@ -1,6 +1,5 @@
 import { app } from './app.js'
 import { connectDB } from './config/database.js'
-import Razorpay from 'razorpay'
 
 const PORT = process.env.PORT || ""
 
