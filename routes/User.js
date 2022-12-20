@@ -7,7 +7,7 @@ export const router = express.Router();
 
 router.post('/login', login)
 router.post('/ragister', ragister)
-router.post('/me', isAuthenticated, myProfile)
+router.get('/me', isAuthenticated, myProfile)
 router.get('/logout', logOut)
 
 router.get('/admin/users' ,isAuthenticated, adminAuth,  getAdminUsers)
