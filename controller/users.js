@@ -3,15 +3,14 @@ import bcrypt from 'bcryptjs'
 import { User } from '../models/user.js'
 import {Order} from '../models/order.js'
 
-
-
 export const myProfile = (req, res, next) =>{
-    const userData =
     res.status(200).json({
         success:true,
         user:req.user
     });
 }
+
+
 export const ragister =  async (req, res) => {
     const { name, email, password } = req.body
     const hashpassword = bcrypt.hashSync(password)
@@ -35,6 +34,7 @@ export const ragister =  async (req, res) => {
         })
     }
 }
+
 
 export const login = async(req, res, next) => {
     const { email, password } = req.body;

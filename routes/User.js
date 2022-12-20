@@ -7,11 +7,11 @@ export const router = express.Router();
 
 router.post('/login', login)
 router.post('/ragister', ragister)
-router.get('/me', isAuthenticated, myProfile)
+router.post('/me', isAuthenticated, myProfile)
 router.get('/logout', logOut)
 
-router.get('/admin/users' ,isAuthenticated, adminAuth,  getAdminUsers )
-router.get('/admin/stats' ,isAuthenticated, adminAuth, getAdminStats )
+router.get('/admin/users' ,isAuthenticated, adminAuth,  getAdminUsers)
+router.get('/admin/stats' ,isAuthenticated, adminAuth, getAdminStats)
 
 // for checking server working or not
 
