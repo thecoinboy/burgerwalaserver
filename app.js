@@ -13,16 +13,15 @@ export const app = express();
 app.use(urlencoded({
     extended: true,
 }))
-
-app.use(cors({
+app.use(cors({  
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"]
 })
 );
+
 app.use(session({
     secret:process.env.SESION_SEC,
     resave:false,
-    saveUninitialized:false
+    saveUninitialized:false,
 })
 );
 
@@ -31,9 +30,7 @@ app.use(cookieParser());
 app.enable("trust proxy");
 app.use(bodyParser.json({ extended: true, limit: "30mb" }))
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }))
+
 // routes
 app.use('/api/v1', router)
 app.use('/api/v1', orderRoute)
-
-
-

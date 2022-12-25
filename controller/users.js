@@ -1,17 +1,17 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { User } from '../models/user.js'
-import {Order} from '../models/order.js'
+import { Order } from '../models/order.js'
 
-export const myProfile = (req, res, next) =>{
+
+export const myProfile = (req, res, next) => {
     res.status(200).json({
-        success:true,
-        user:req.user
+        success: true,
+        user: req.user
     });
 }
 
-
-export const ragister =  async (req, res) => {
+export const ragister = async (req, res) => {
     const { name, email, password } = req.body
     const hashpassword = bcrypt.hashSync(password)
     const user = new User({
@@ -27,8 +27,9 @@ export const ragister =  async (req, res) => {
         user.save();
         res.status(200).cookie("token", token, {
             httpOnly: true,
-            expiresIn: "2hr"
-        }).json({
+            expiresIn: "2hr",
+            sameSite: 'none',
+        }).json({ 
             message: "user ragistred successfully",
             user,
         })
@@ -36,68 +37,65 @@ export const ragister =  async (req, res) => {
 }
 
 
-export const login = async(req, res, next) => {
+export const login = async (req, res, next) => {
     const { email, password } = req.body;
     const find = await User.findOne({ email: email })
     const checkpassword = bcrypt.compareSync(password, find.password)
     const token = jwt.sign({ id: find._id }, process.env.JWT_SECRET)
     if (find) {
-        if (checkpassword) {
-            return res.status(200).cookie("token",token, {
+        if (checkpassword){
+            res.status(200).cookie("token", token, {
                 httpOnly: true,
-                expiresIn: "2hr",
+                expiresIn: "2hr"
             }).json({
-                message: "loggedIn successfully",
-                user: find,
-                token,
+                message: "User loggedIn Successfully",
+                user:find
             })
-
-        }else (
-            res.status(400).json({message:"incorrect password"})
+        } else (
+            res.status(400).json({ message: "incorrect password" })
         )
     } else (
         res.status(400).json({ message: "invalid credential" })
     )
-    }
-
-export const logOut = async(req, res, next) =>{
-    res.cookie("token", "", {
-        expiresIn:new Date(Date.now()),
-        httpOnly:true
-    })
-    res.status(200).json({  
-        message:"Logged out"
-    })   
 }
 
+export const logOut = async (req, res, next) => {
+    res.cookie("token", "", {
+        expiresIn: new Date(Date.now()),
+        httpOnly: true
+    })
+    res.status(200).json({
+        message: "Logged out"
+    })
+}
 
-export const getAdminUsers = async(req, res, next) =>{
+export const getAdminUsers = async (req, res, next) => {
     const user = await User.find({})
     res.status(200).json({
-        success:true,
+        success: true,
         user,
     })
 }
 
-export const getAdminStats = async(req, res, next) =>{
-    const userCount = await User.countDocuments(); 
+export const getAdminStats = async (req, res, next) => {
+    const userCount = await User.countDocuments();
     const orders = await Order.find({});
-    const preparingOrders = await orders.filter((i) => i.orderStatus === "Preparing" );
+    const preparingOrders = await orders.filter((i) => i.orderStatus === "Preparing");
     const ShippedOrders = await orders.filter((i) => i.orderStatus === "Shipped");
-    const DeliveredOrders = await orders.filter((i) => i.orderStatus === "Delivered" );
+    const DeliveredOrders = await orders.filter((i) => i.orderStatus === "Delivered");
     let totalIncome = 0;
 
-    orders.forEach((i) => {  
+    orders.forEach((i) => {
         totalIncome += i.orderAmount
     })
     res.status(200).json({
-        success:true,
+        success: true,
         userCount,
-        orderCount:{
-            total:orders.length,
-            preparing:preparingOrders.length,
-            shipped:ShippedOrders.length,
-            delivered:DeliveredOrders.length
+        orderCount: {
+            total: orders.length,
+            preparing: preparingOrders.length,
+            shipped: ShippedOrders.length,
+            delivered: DeliveredOrders.length
         }
     })
 }
