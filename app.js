@@ -22,6 +22,10 @@ app.use(session({
     secret:process.env.SESION_SEC,
     resave:false,
     saveUninitialized:false,
+    cookie: {
+        sameSite: 'none',  // allow the cookie to be sent in cross-site requests
+        secure: false,  // only send the cookie over HTTPS
+      },
 })
 );
 

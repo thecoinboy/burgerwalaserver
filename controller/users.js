@@ -25,17 +25,17 @@ export const ragister = async (req, res) => {
         })
     } else {
         user.save();
-        res.status(200).cookie("token", token, {
+        res.status(200).cookie('token', token, {
             httpOnly: true,
-            expiresIn: "2hr",
+            expiresIn: '2hr',
             sameSite: 'none',
+            secure:false
         }).json({ 
             message: "user ragistred successfully",
             user,
         })
     }
 }
-
 
 export const login = async (req, res, next) => {
     const { email, password } = req.body;
@@ -44,9 +44,11 @@ export const login = async (req, res, next) => {
     const token = jwt.sign({ id: find._id }, process.env.JWT_SECRET)
     if (find) {
         if (checkpassword){
-            res.status(200).cookie("token", token, {
+            res.status(200).cookie('token', token, {
                 httpOnly: true,
-                expiresIn: "2hr"
+                expiresIn: '2hr',
+                sameSite:'none',
+                secure:false
             }).json({
                 message: "User loggedIn Successfully",
                 user:find
@@ -99,3 +101,4 @@ export const getAdminStats = async (req, res, next) => {
         }
     })
 }
+
